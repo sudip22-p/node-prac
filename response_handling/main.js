@@ -21,6 +21,14 @@ app.delete('/', (req, res) => {
   res.send('Hello World from DELETE !')
 })
 
+
+//file sending:do root specify/absolute path
+app.get('/index', (req, res) => {
+    console.log('index index yes working')
+    // res.send('Hello World from Index!')//for sending text
+    res.sendFile('templates/index.html',{root:__dirname})//for sending file
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
