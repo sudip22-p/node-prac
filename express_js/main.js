@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 const port = 3000
+
+app.use(express.static('public'))//for creating public accessible files:http://localhost:3000/hello.txt
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
