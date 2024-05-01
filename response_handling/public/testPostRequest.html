@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing the post request</title>
+</head>
+<body>
+    <h1>check the console....</h1>
+</body>
+<script>
+    async function testPostRequest(){
+        let a= await fetch("/",{method:"POST"})//method:POST/PUT/DELETE
+        let b= await a.text();
+        console.log(b);
+    }
+    testPostRequest();
+</script>
+</html>
