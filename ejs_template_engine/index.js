@@ -1,16 +1,16 @@
 const express = require('express')
-var slug = require('slug')
+// var slug = require('slug')
 //setting the template engine as ejs
-app.set('view engine', 'ejs')
 const app = express()
 const port = 3000
+app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
     //value from db:
     let websiteName = 'SUD'
     let searchPlaceholder = 'Search Anything'
     // res.sendFile('./templates/index.html', { root: __dirname })
-    res.render('./templates/index', {websiteName: websiteName,searchPlaceholder: searchPlaceholder})
+    res.render('index', {websiteName: websiteName,searchPlaceholder: searchPlaceholder})
 })
 
 app.get('/blogs', (req, res) => {
@@ -22,11 +22,8 @@ app.get('/blogs', (req, res) => {
 
     let title2 = 'Journey to the Summit: A Mountain Adventure';
     let content2 = `Embark on an exhilarating expedition to the summit in our latest blog post, "Journey to the Summit: A Mountain Adventure." Follow along as we ascend towering peaks, navigate rugged terrain, and conquer challenging trails. Feel the rush of adrenaline as we scale rocky cliffs and traverse narrow ridges, all while surrounded by awe-inspiring views of snow-capped peaks and alpine meadows. Experience the thrill of reaching new heights and the sense of accomplishment that comes with pushing beyond your limits. Whether you're an experienced mountaineer or a novice hiker, our blog promises to transport you to the heart of the mountains and ignite your passion for adventure. Join us as we embark on this epic journey and discover the true essence of mountain exploration.`;
-
-
-    let searchPlaceholder = 'Search Anything'
     // res.sendFile('./templates/blogs.html', { root: __dirname })
-    res.render('./templates/blogs', {title1: title1,title2: title2,content1: content1,content2: content2})
+    res.render('blogs', {title1: title1,title2: title2,content1: content1,content2: content2})
 })
 
 app.listen(port, () => {
