@@ -1,5 +1,7 @@
 const express = require('express')
 var slug = require('slug')
+//setting the template engine as ejs
+app.set('view engine', 'ejs')
 const app = express()
 const port = 3000
 
@@ -7,12 +9,14 @@ app.get('/', (req, res) => {
     //value from db:
     let websiteName = 'SUD'
     let searchPlaceholder = 'Search Anything'
-    res.sendFile('./templates/index.html', { root: __dirname })
+    // res.sendFile('./templates/index.html', { root: __dirname })
+    res.render('./templates/index', {websiteName: websiteName,searchPlaceholder: searchPlaceholder})
 })
 
-app.get('/blogs/:slug', (req, res) => {
+app.get('/blogs', (req, res) => {
+// app.get('/blogs/:slug', (req, res) => {
+    // const  slug  = req.params.slug;
     //value from db:
-    const  slug  = req.params.slug;
     let title1 = 'A Day Travel on Hill'
     let content1 = `Embark on a picturesque journey through the serene landscapes of "A Day Travel on Hill." This captivating blog invites readers to immerse themselves in the beauty of nature, as they traverse winding trails, breathe in the crisp mountain air, and witness breathtaking vistas. From the gentle rustle of leaves to the melodious chirping of birds, every moment on this hillside adventure is a symphony for the senses. Whether exploring hidden waterfalls, discovering quaint villages, or simply pausing to admire the majestic peaks, each step unveils a new chapter in the tale of tranquility and wonder. Join us as we escape the hustle and bustle of daily life and embrace the timeless allure of nature's embrace on "A Day Travel on Hill."`
 
@@ -21,7 +25,8 @@ app.get('/blogs/:slug', (req, res) => {
 
 
     let searchPlaceholder = 'Search Anything'
-    res.sendFile('./templates/blogs.html', { root: __dirname })
+    // res.sendFile('./templates/blogs.html', { root: __dirname })
+    res.render('./templates/blogs', {title1: title1,title2: title2,content1: content1,content2: content2})
 })
 
 app.listen(port, () => {
