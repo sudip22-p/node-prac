@@ -1,6 +1,11 @@
-require('dotenv').config(); // Load environment variables from .env file
-const express = require('express');
-const mongoose = require('mongoose');
+// require('dotenv').config(); // Load environment variables from .env file
+// const express = require('express');
+// const mongoose = require('mongoose');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express'
+import mongoose from 'mongoose'
+
 const app = express();
 const port = 3000;
 const dbPassword = process.env.MONGODB_PASSWORD; // Retrieve password from environment variable
