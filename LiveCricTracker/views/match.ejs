@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match Details</title>
+    <style>
+      /* Add your CSS styles here */
+      /* Example CSS for demonstration */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .match-info {
+        margin-bottom: 20px;
+      }
+      .team-logo {
+        max-width: 48px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Match Details</h1>
+      <div class="match-info">
+        <h2><%= gameDetails.name %></h2>
+        <p>Match Type: <%= gameDetails.matchType %></p>
+        <p>Status: <%= gameDetails.status %></p>
+        <p>Venue: <%= gameDetails.venue %></p>
+        <p>Date: <%= gameDetails.date %></p>
+        <p>Time (GMT): <%= gameDetails.dateTimeGMT %></p>
+      </div>
+      <h2>Teams</h2>
+      <div class="teams">
+        <% gameDetails.teamInfo.forEach(team => { %>
+        <div class="team">
+          <img src="<%= team.img %>" alt="<%= team.name %>" class="team-logo" />
+          <div><%= team.name %></div>
+        </div>
+        <% }); %>
+      </div>
+      <% if (gameDetails.score && gameDetails.score.length > 0) { %>
+      <h2>Score</h2>
+      <div class="score">
+        <% gameDetails.score.forEach(score => { %>
+        <p>
+          <%= score.inning %>: <%= score.r %> runs, <%= score.w %> wickets, <%=
+          score.o %> overs
+        </p>
+        <% }); %>
+      </div>
+      <% } %> <% if (gameDetails.tossWinner && gameDetails.tossWinner.length >
+      0) { %>
+
+      <h2>Toss Details</h2>
+      <p>Toss Winner: <%= gameDetails.tossWinner %></p>
+      <p>Toss Choice: <%= gameDetails.tossChoice %></p>
+      <% } %>
+    </div>
+  </body>
+</html>

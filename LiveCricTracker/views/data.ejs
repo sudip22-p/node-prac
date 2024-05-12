@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Cricket Scores</title>
+    <style>
+        /* Add your CSS styles here */
+        div.matches{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .match{
+            border: 1px solid black;
+            width: 30vw;
+            height: 250px;
+            padding-left: 12px;
+            margin-left: 22px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Live CRIC Tracker</h1>
+    </nav>
+    <div class="matches">
+        <% matches.forEach(match => { %>
+            <div class="match" id="<%=match.id%>">
+                <p><span><%=match.ms%></span><%= match.matchType %>---<%= match.series %></p>
+                <p class="title"><%= match.t1 %> VS <%= match.t2 %></p>
+                <p>Result-- <%= match.status %></p>
+                <% if (match.t1s=='' && match.t2s=='') { %>
+                    <b><%=match.t1%> - <span>N/A</span></b>
+                    <b><%=match.t2%> - <span>N/A</span></b>
+                <% } %>
+                <% if (match.t1s!='' && match.t2s!='') { %>
+                    <b><%=match.t1%> - <span><%=  match.t1s %></span></b>
+                    <b><%=match.t2%> - <span><%=  match.t2s %></span></b>
+                <% } %>
+                <% if (match.t1s=='' && match.t2s!='') { %>
+                    <b><%=match.t1%> - <span>yet to Bat</span></b>
+                    <b><%=match.t2%> - <span><%=  match.t2s %></span></b>
+                <% } %>
+                <% if (match.t1s!='' && match.t2s=='') { %>
+                    <b><%=match.t1%> - <span><%=  match.t1s %></span></b>
+                    <b><%=match.t2%> - <span>yet to Bat</span></b>
+                <% } %>
+                <p>Match Time-- <%= match.dateTimeGMT %></p>
+            </div>
+        <% }); %>
+    </div>
+</body>
+<script>
+    let matches=document.getElementsByClassName('match');
+    for (let i = 0; i < matches.length; i++) {
+        const element = matches[i];
+        element.addEventListener('click',()=>{
+            window.location.href = 'http://localhost:3000/match-details?id=' + element.id;
+            // alert('click recorded'+element.id);
+        })
+    }
+</script>
+</html>

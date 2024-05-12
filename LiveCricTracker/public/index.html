@@ -1,0 +1,70 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Cricket Scores</title>
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .score-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .score-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Cricket Scores</h1>
+        <ul class="score-list" id="score-list"></ul>
+    </div>
+
+    <script>
+        // Function to fetch live match scores from the backend
+        async function fetchLiveScores() {
+            const response = await fetch('/live-scores');
+            const scores = await response.json();
+            return scores;
+        }
+
+        // Function to display live match scores on the webpage
+        async function displayLiveScores() {
+            const scoreList = document.getElementById('score-list');
+            const scores = await fetchLiveScores();
+
+            scoreList.innerHTML = ''; // Clear previous scores
+
+            scores.forEach(score => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('score-item');
+                listItem.textContent = `${score.team1} vs ${score.team2}: ${score.score}`;
+                scoreList.appendChild(listItem);
+            });
+        }
+
+        // Display live scores when the page loads
+        window.onload = displayLiveScores;
+
+        // Refresh live scores every 30 seconds
+        setInterval(displayLiveScores, 30000);
+    </script>
+</body>
+</html>
