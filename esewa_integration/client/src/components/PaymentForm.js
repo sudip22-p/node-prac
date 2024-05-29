@@ -1,49 +1,130 @@
-import React, { useState } from 'react';
-import CryptoJS from 'crypto-js';
+// App.jsx
+import { useEffect, useState } from "react";
 
-const PaymentForm = () => {
-    const [transactionUuid] = useState('unique-transaction-id'); // Removed setTransactionUuid to avoid unused var warning
-    const [error, setError] = useState('');
+function App() {
+  const [orders, setOrders] = useState([]);
 
-    const generateSignature = (totalAmount, transactionUuid, productCode) => {
-        const secretKey = '8gBm/:&EnhH.1/q('; // Use the provided secret key for UAT
-        const message = `total_amount=${totalAmount},transaction_uuid=${transactionUuid},product_code=${productCode}`;
-        const hash = CryptoJS.HmacSHA256(message, secretKey);
-        return CryptoJS.enc.Base64.stringify(hash);
-    }
+  const handlePayment = async (payment_method) => {
+    const url = "http://localhost:5001/api/orders/create";
+    const data = {
+      amount: 100,
+      products: [{ product: "test", amount: 100, quantity: 1 }],
+      payment_method,
+    };
 
-    const handleSubmit = (event) => {
-        try {
-            const totalAmount = 110; // Replace with actual total amount
-            const productCode = 'EPAYTEST';
-            const signature = generateSignature(totalAmount, transactionUuid, productCode);
-            document.getElementById('signature').value = signature;
-        } catch (error) {
-            console.error('Error in handleSubmit:', error);
-            setError('An error occurred while generating the signature.');
-            event.preventDefault();
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any other headers as needed
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Check if the request was successful (status code 2xx)
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData);
+        if (responseData.payment_method === "esewa") {
+          esewaCall(responseData.formData);
         }
+      } else {
+        console.error("Failed to fetch:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+  };
+
+  const esewaCall = (formData) => {
+    console.log(formData);
+    var path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+    var form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", path);
+
+    for (var key in formData) {
+      var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("type", "hidden");
+      hiddenField.setAttribute("name", key);
+      hiddenField.setAttribute("value", formData[key]);
+      form.appendChild(hiddenField);
     }
 
-    return (
-        <div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST" onSubmit={handleSubmit}>
-                <input type="text" id="amount" name="amount" value="100" required readOnly />
-                <input type="text" id="tax_amount" name="tax_amount" value="10" required readOnly />
-                <input type="text" id="total_amount" name="total_amount" value="110" required readOnly />
-                <input type="text" id="transaction_uuid" name="transaction_uuid" value={transactionUuid} required readOnly />
-                <input type="text" id="product_code" name="product_code" value="EPAYTEST" required readOnly />
-                <input type="text" id="product_service_charge" name="product_service_charge" value="0" required readOnly />
-                <input type="text" id="product_delivery_charge" name="product_delivery_charge" value="0" required readOnly />
-                <input type="text" id="success_url" name="success_url" value="http://localhost:3000/success" required readOnly />
-                <input type="text" id="failure_url" name="failure_url" value="http://localhost:3000/failure" required readOnly />
-                <input type="text" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required readOnly />
-                <input type="hidden" id="signature" name="signature" value="" required />
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
-    );
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  useEffect(() => {
+    const getOrders = async () => {
+      const url = "http://localhost:5001/api/orders";
+
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other headers as needed
+          },
+        });
+
+        // Check if the request was successful (status code 2xx)
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(responseData);
+          setOrders(responseData);
+        } else {
+          console.error(
+            "Failed to fetch:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error during fetch:", error);
+      }
+    };
+    getOrders();
+  }, []);
+
+  return (
+    <>
+    <div className="w-[100vw] flex justify-center items-center mt-[5vh]">
+    <button
+        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 mx-2"
+        onClick={() => handlePayment("esewa")}
+      >
+        Pay Through Esewa
+      </button>
+    </div>
+
+    <table className="min-w-[90vw] ml-[5vw] mt-[10vh] border-collapse border border-gray-200">
+        <thead>
+            <tr>
+            <th className="border border-gray-300 px-4 py-2 bg-gray-100 text-left">Id</th>
+            <th className="border border-gray-300 px-4 py-2 bg-gray-100 text-left">Status</th>
+            <th className="border border-gray-300 px-4 py-2 bg-gray-100 text-left">Amount</th>
+            <th className="border border-gray-300 px-4 py-2 bg-gray-100 text-left">Transaction Code</th>
+            <th className="border border-gray-300 px-4 py-2 bg-gray-100 text-left">Payment Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            {orders.map((order, index) => (
+            <tr key={order._id} className="hover:bg-gray-50">
+                <td className="border border-gray-300 px-4 py-2">{order._id}</td>
+                <td className="border border-gray-300 px-4 py-2">{order.status}</td>
+                <td className="border border-gray-300 px-4 py-2">{order.amount}</td>
+                <td className="border border-gray-300 px-4 py-2">{order.transaction_code}</td>
+                <td className="border border-gray-300 px-4 py-2">{order.payment_method}</td>
+            </tr>
+            ))}
+        </tbody>
+    </table>
+
+    </>
+  );
 }
 
-export default PaymentForm;
+export default App;
